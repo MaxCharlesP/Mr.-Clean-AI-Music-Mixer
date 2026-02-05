@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Music Mixer (Interactive Mockup)</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #1e1e1e;
+        color: #f0f0f0;
+        padding: 20px;
+    }
+    h1 { text-align: center; color: #ff4081; }
+    .section {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #2a2a2a;
+        border-radius: 10px;
+    }
+    label { display: block; margin-top: 10px; }
+    input[type=range] { width: 100%; }
+    button {
+        padding: 10px 20px;
+        margin: 10px 5px 0 0;
+        background-color: #ff4081;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    button:hover { background-color: #e91e63; }
+    audio { width: 100%; margin-top: 10px; }
+    .meter-container {
+        margin-top: 15px;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-end;
+        height: 100px;
+        background-color: #111;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .meter {
+        width: 20px;
+        background-color: #ff4081;
+        transition: height 0.1s;
+    }
+</style>
+</head>
+<body>
+
+<h1>AI Music Mixer (Interactive Mockup)</h1>
+
+<div class="section">
+    <h2>Song Input</h2>
+    <p>Upload your MP3 or WAV track:</p>
+    <input type="file" accept=".mp3,.wav" id="songUpload"><br>
+    <audio id="songPlayer" controls></audio>
+    <p>Reference track URL (mock):</p>
+    <input type="text" placeholder="Enter URL for inspiration track">
+</div>
+
+<div class="section">
+    <h2>Vocal Processing Controls</h2>
+    <label>Compression: <span id="compVal">50</span>%</label>
+    <input type="range" min="0" max="100" value="50" oninput="updateMeters()">
+    <label>EQ 400Hz: <span id="eq400">0</span>dB</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+    <label>EQ 1500Hz: <span id="eq1500">0</span>dB</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+    <label>EQ 5000Hz: <span id="eq5000">0</span>dB</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+    <label>EQ 7000Hz: <span id="eq7000">0</span>dB</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+    <label>EQ 10000Hz: <span id="eq10000">0</span>dB</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+    <label>EQ 12000Hz: <span id="eq12000">0</span>dB</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+    <label>Saturation: <span id="satVal">50</span>%</label>
+    <input type="range" min="0" max="100" value="50" oninput="updateMeters()">
+    <label>Air: <span id="airVal">50</span>%</label>
+    <input type="range" min="0" max="100" value="50" oninput="updateMeters()">
+    <label>Pitch Shift: <span id="pitchVal">0</span> semitones</label>
+    <input type="range" min="-12" max="12" value="0" oninput="updateMeters()">
+</div>
+
+<div class="section">
+    <h2>Audio Level Meters (Simulated)</h2>
+    <div class="meter-container">
+        <div class="meter" id="meter1" style="height:50px"></div>
+        <div class="meter" id="meter2" style="height:50px"></div>
+        <div class="meter" id="meter3" style="height:50px"></div>
+        <div class="meter" id="meter4" style="height:50px"></div>
+        <div class="meter" id="meter5" style="height:50px"></div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Actions</h2>
+    <button onclick="previewChanges()">Preview Changes</button>
+    <button onclick="undoChanges()">Undo</button>
+    <button onclick="revertChanges()">Revert</button>
+    <button onclick="exportTrack()">Export Track</button>
+    <p id="actionMsg" style="margin-top:10px; color:#ff4081;"></p>
+</div>
+
+<script>
+    // Simulate meter heights based on slider values
+    function updateMeters(){
+        const sliders = [
+            parseInt(document.querySelector('input[oninput*="updateMeters()"]').value), // Compression
+            parseInt(document.querySelectorAll('input[oninput*="updateMeters()"]')[1].value), // EQ 400
+            parseInt(document.querySelectorAll('input[oninput*="updateMeters()"]')[2].value), // EQ 1500
+            parseInt(document.querySelectorAll('input[oninput*="updateMeters()"]')[3].value), // EQ 5000
+            parseInt(document.querySelectorAll('input[oninput*="updateMeters()"]')[4].value)  // EQ 7000
+        ];
+        const meters = document.querySelectorAll('.meter');
+        meters.forEach((m,i) => {
+            let val = Math.abs(sliders[i] || 50) + 30; // mock dynamic height
+            if(val > 100) val = 100;
+            m.style.height = val + 'px';
+        });
+
+        // Update displayed slider values
+        document.getElementById('compVal').innerText = document.querySelectorAll('input[oninput*="updateMeters()"]')[0].value;
+        document.getElementById('eq400').innerText = document.querySelectorAll('input[oninput*="updateMeters()"]')[1].value;
+        document.getElementById('eq1500').innerText = document.querySelectorAll('input[oninput*="updateMeters()"]')[2].value;
+        document.getElementById('eq5000').innerText = document.querySelectorAll('input[oninput*="updateMeters()"]')[3].value;
+        document.getElementById('eq7000').innerText = document.querySelectorAll('input[oninput*="updateMeters()"]')[4].value;
+    }
+
+    function previewChanges(){
+        document.getElementById('actionMsg').innerText = "Previewing changes... (mock simulation)";
+    }
+
+    function undoChanges(){
+        document.getElementById('actionMsg').innerText = "Undo last change (mock)";
+    }
+
+    function revertChanges(){
+        document.getElementById('actionMsg').innerText = "Reverted all changes (mock)";
+    }
+
+    function exportTrack(){
+        document.getElementById('actionMsg').innerText = "Exporting track... (mock, no real processing)";
+    }
+
+    // Song upload simulation
+    document.getElementById('songUpload').addEventListener('change', function(event){
+        const file = event.target.files[0];
+        if(file){
+            const audio = document.getElementById('songPlayer');
+            audio.src = URL.createObjectURL(file);
+            audio.load();
+        }
+    });
+</script>
+
+</body>
+</html>
